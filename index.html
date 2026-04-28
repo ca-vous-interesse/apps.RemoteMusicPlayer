@@ -155,66 +155,6 @@
       border: none;
     }
 
-    .phone-card {
-      width: min(360px, 100%);
-      margin: 0 auto;
-      aspect-ratio: 9 / 19.5;
-      border-radius: 48px;
-      padding: 16px;
-      background: linear-gradient(160deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04));
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .phone-screen {
-      height: 100%;
-      border-radius: 36px;
-      background:
-        linear-gradient(180deg, rgba(124,199,255,0.22), transparent 40%),
-        linear-gradient(0deg, rgba(167,243,208,0.16), transparent 45%),
-        #111827;
-      overflow: hidden;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .mock-cover {
-      aspect-ratio: 1;
-      border-radius: 24px;
-      background: radial-gradient(circle at 35% 30%, #fff, #7cc7ff 24%, #334155 62%, #111827);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
-    }
-
-    .mock-title {
-      margin-top: 18px;
-      font-weight: 800;
-      font-size: 1.35rem;
-      letter-spacing: -0.04em;
-    }
-
-    .mock-subtitle {
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .mock-bars {
-      display: grid;
-      grid-template-columns: repeat(19, 1fr);
-      gap: 4px;
-      align-items: end;
-      height: 72px;
-      margin-top: 24px;
-    }
-
-    .mock-bars span {
-      display: block;
-      background: linear-gradient(180deg, #a7f3d0, #7cc7ff);
-      border-radius: 999px;
-      min-height: 12px;
-    }
 
     section {
       padding: 54px 0;
@@ -284,6 +224,91 @@
       border-radius: 22px;
       border: 1px solid var(--border);
       box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+      cursor: zoom-in;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+
+    .screenshots img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    #lightbox.open {
+      display: flex;
+    }
+
+    #lightbox img {
+      max-height: 90vh;
+      max-width: min(440px, 90vw);
+      border-radius: 28px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+      border: 1px solid var(--border);
+      object-fit: contain;
+      user-select: none;
+    }
+
+    .lb-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 1.5rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.15s;
+    }
+
+    .lb-btn:hover { background: rgba(255,255,255,0.22); }
+    #lb-prev { left: 18px; }
+    #lb-next { right: 18px; }
+
+    #lb-close {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 1.2rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.15s;
+    }
+
+    #lb-close:hover { background: rgba(255,255,255,0.22); }
+
+    #lb-counter {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.55);
+      font-size: 0.9rem;
+      font-variant-numeric: tabular-nums;
     }
 
     .media-grid video {
@@ -368,18 +393,11 @@
           </div>
         </div>
 
-        <div class="phone-card" aria-label="Aperçu visuel de l'application">
-          <div class="phone-screen">
-            <div>
-              <div class="mock-cover"></div>
-              <div class="mock-title">Lecture en cours</div>
-              <div class="mock-subtitle">Pochette, paroles, visualisations et contrôles avancés</div>
-            </div>
-            <div class="mock-bars" aria-hidden="true">
-              <span style="height:20%"></span><span style="height:55%"></span><span style="height:35%"></span><span style="height:78%"></span><span style="height:42%"></span><span style="height:92%"></span><span style="height:65%"></span><span style="height:30%"></span><span style="height:88%"></span><span style="height:50%"></span><span style="height:72%"></span><span style="height:38%"></span><span style="height:95%"></span><span style="height:58%"></span><span style="height:24%"></span><span style="height:82%"></span><span style="height:45%"></span><span style="height:68%"></span><span style="height:33%"></span>
-            </div>
-          </div>
-        </div>
+        <img
+          src="screenshots/screen-01.png"
+          alt="Capture d'écran — Lecteur en cours de lecture"
+          style="width:min(320px,100%);margin:0 auto;display:block;border-radius:48px;border:1px solid var(--border);box-shadow:var(--shadow);object-fit:cover;"
+        />
       </div>
     </section>
 
@@ -512,7 +530,7 @@
         <h2>Support</h2>
         <div class="card">
           <p>Pour toute question, demande d’aide ou signalement de problème, contactez le support :</p>
-          <p><strong>Email :</strong> <a href="mailto:histoireperle@free.fr">histoireperle@free.fr</a></p>
+          <p><strong>Email :</strong> <a href="mailto:histoireperle@free.fr">ytcavousinteresse@gmail.com</a></p>
           <p>Merci d’indiquer le modèle de votre iPhone, la version d’iOS, la version de l’application et une description précise du problème rencontré.</p>
         </div>
       </div>
@@ -527,7 +545,7 @@
           <p>L’application peut demander l’accès au réseau local afin de détecter ou lire des contenus audio disponibles sur votre réseau domestique. Elle peut également utiliser la localisation de l’appareil uniquement pour proposer une météo locale simplifiée, sauf si vous choisissez manuellement une localité.</p>
           <p>Les favoris, recherches sauvegardées, radios personnalisées, réglages audio, réveils, préférences d’interface et fichiers copiés localement restent stockés sur votre appareil, sauf action volontaire d’export/import de configuration.</p>
           <p>Aucune donnée personnelle n’est vendue. Aucune bibliothèque musicale personnelle n’est utilisée à des fins publicitaires. Aucune donnée musicale locale n’est partagée avec des tiers par l’application.</p>
-          <p>Contact confidentialité : <a href="mailto:histoireperle@free.fr">histoireperle@free.fr</a></p>
+          <p>Contact confidentialité : <a href="mailto:histoireperle@free.fr">ytcavousinteresse@gmail.com</a></p>
           <p><em>Dernière mise à jour : 28 avril 2026.</em></p>
         </div>
       </div>
@@ -540,5 +558,60 @@
       <p><a href="#support">Support</a> · <a href="#privacy">Confidentialité</a></p>
     </div>
   </footer>
+
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Capture agrandie">
+    <button id="lb-close" aria-label="Fermer">✕</button>
+    <button class="lb-btn" id="lb-prev" aria-label="Précédente">‹</button>
+    <img id="lb-img" src="" alt="" />
+    <button class="lb-btn" id="lb-next" aria-label="Suivante">›</button>
+    <div id="lb-counter"></div>
+  </div>
+
+  <script>
+    (function () {
+      const box    = document.getElementById('lightbox');
+      const img    = document.getElementById('lb-img');
+      const counter = document.getElementById('lb-counter');
+      const imgs   = Array.from(document.querySelectorAll('.screenshots img'));
+      let current  = 0;
+
+      function show(index) {
+        current = (index + imgs.length) % imgs.length;
+        img.src = imgs[current].src;
+        img.alt = imgs[current].alt;
+        counter.textContent = (current + 1) + ' / ' + imgs.length;
+      }
+
+      function open(index) {
+        show(index);
+        box.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        box.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      imgs.forEach(function (el, i) {
+        el.addEventListener('click', function () { open(i); });
+      });
+
+      document.getElementById('lb-close').addEventListener('click', close);
+      document.getElementById('lb-prev').addEventListener('click', function () { show(current - 1); });
+      document.getElementById('lb-next').addEventListener('click', function () { show(current + 1); });
+
+      box.addEventListener('click', function (e) {
+        if (e.target === box) close();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (!box.classList.contains('open')) return;
+        if (e.key === 'Escape')      close();
+        if (e.key === 'ArrowLeft')   show(current - 1);
+        if (e.key === 'ArrowRight')  show(current + 1);
+      });
+    })();
+  </script>
 </body>
 </html>
