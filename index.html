@@ -107,13 +107,90 @@
 
     .eyebrow {
       display: inline-flex;
+      align-items: center;
+      gap: 8px;
       padding: 8px 14px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(167,243,208,0.3);
       border-radius: 999px;
       color: var(--accent-2);
-      background: rgba(255,255,255,0.05);
+      background: rgba(167,243,208,0.07);
       font-size: 0.92rem;
       margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      flex-shrink: 0;
+      animation: pulse-dot 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.65); }
+    }
+
+    .hero-img-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-img-wrap::before {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 60%;
+      background: radial-gradient(circle, rgba(124,199,255,0.3) 0%, transparent 70%);
+      top: 10%;
+      left: 10%;
+      pointer-events: none;
+      filter: blur(30px);
+    }
+
+    .hero-img-wrap img {
+      position: relative;
+      animation: float-y 5s ease-in-out infinite;
+    }
+
+    @keyframes float-y {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    .nav-links a {
+      position: relative;
+      padding-bottom: 3px;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      right: 50%;
+      height: 1.5px;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: left 0.22s, right 0.22s;
+    }
+
+    .nav-links a:hover { text-decoration: none; }
+    .nav-links a:hover::after { left: 0; right: 0; }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     h1 {
@@ -155,9 +232,30 @@
       border: none;
     }
 
+    .button {
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      opacity: 0.88;
+      text-decoration: none;
+    }
+
+    .button.primary:hover {
+      opacity: 1;
+      box-shadow: 0 14px 40px rgba(124,199,255,0.45);
+    }
 
     section {
       padding: 54px 0;
+    }
+
+    h1 {
+      background: linear-gradient(140deg, #fff 35%, var(--accent) 75%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     h2 {
@@ -165,6 +263,10 @@
       line-height: 1.05;
       letter-spacing: -0.055em;
       margin: 0 0 18px;
+      background: linear-gradient(135deg, #fff 50%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .section-intro {
@@ -184,8 +286,36 @@
       background: rgba(255,255,255,0.055);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 28px 24px 24px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 70px rgba(0,0,0,0.32);
+      border-color: rgba(124,199,255,0.25);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card-icon {
+      display: inline-block;
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+      line-height: 1;
     }
 
     .card h3 {
@@ -322,11 +452,88 @@
       background: #000;
     }
 
-    .feature-list {
-      columns: 2;
-      column-gap: 40px;
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px 40px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .feature-grid li {
       color: var(--muted);
-      padding-left: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 1.05rem;
+    }
+
+    .feature-grid li::before {
+      content: '✓';
+      color: var(--accent-2);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Effects marquee */
+    .effects-marquee {
+      overflow: hidden;
+      padding: 48px 0 52px;
+      position: relative;
+    }
+
+    .effects-marquee::before,
+    .effects-marquee::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 120px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .effects-marquee::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg), transparent);
+    }
+
+    .effects-marquee::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg), transparent);
+    }
+
+    .effects-track {
+      display: flex;
+      gap: 14px;
+      width: max-content;
+      animation: marquee-x 110s linear infinite;
+    }
+
+    .effects-marquee:hover .effects-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee-x {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .effects-track img {
+      height: 210px;
+      width: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      flex-shrink: 0;
+      display: block;
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+
+    .effects-track img:hover {
+      transform: scale(1.04) translateY(-4px);
+      box-shadow: 0 18px 50px rgba(124,199,255,0.25);
     }
 
     .privacy-box {
@@ -340,6 +547,7 @@
       padding: 40px 0 60px;
       color: var(--muted);
       border-top: 1px solid var(--border);
+      background: linear-gradient(0deg, rgba(124,199,255,0.04), transparent);
     }
 
     @media (max-width: 900px) {
@@ -353,8 +561,8 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .feature-list {
-        columns: 1;
+      .feature-grid {
+        grid-template-columns: 1fr;
       }
 
       header {
@@ -393,11 +601,13 @@
           </div>
         </div>
 
-        <img
-          src="screenshots/screen-01.png"
-          alt="Capture d'écran — Lecteur en cours de lecture"
-          style="width:min(320px,100%);margin:0 auto;display:block;border-radius:48px;border:1px solid var(--border);box-shadow:var(--shadow);object-fit:cover;"
-        />
+        <div class="hero-img-wrap">
+          <img
+            src="screenshots/screen-01.png"
+            alt="Capture d'écran — Lecteur en cours de lecture"
+            style="width:min(300px,100%);display:block;border-radius:44px;border:1px solid var(--border);box-shadow:0 40px 100px rgba(0,0,0,0.5);object-fit:cover;"
+          />
+        </div>
       </div>
     </section>
 
@@ -407,27 +617,33 @@
         <p class="section-intro">L’application scanne vos musiques locales ou distantes, construit un catalogue exploitable, permet une recherche fine et donne accès rapidement aux artistes, albums, titres, favoris, fichiers récents ou lectures aléatoires.</p>
 
         <div class="grid">
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🗂️</span>
             <h3>Catalogue local ou réseau</h3>
             <p>Scan d’un répertoire local ou distant pour construire automatiquement un catalogue des musiques disponibles.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🔍</span>
             <h3>Recherche avancée</h3>
             <p>Recherche par artiste, album, titre, style et année, avec possibilité de sauvegarder les recherches importantes pour un accès immédiat.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🗺️</span>
             <h3>Navigation naturelle</h3>
             <p>Affichage par liste d’artistes, puis albums et titres, avec possibilité de voir tous les morceaux d’un artiste sans fouiller dans chaque album.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">⭐</span>
             <h3>Favoris et accès rapide</h3>
             <p>Affichage des favoris, des derniers fichiers ajoutés et de sélections aléatoires pour retrouver facilement quoi écouter.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">📥</span>
             <h3>Écoute hors réseau</h3>
             <p>Les musiques distantes peuvent être copiées localement sur l’iPhone pour rester disponibles hors du réseau local. La copie locale peut être supprimée simplement.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🎵</span>
             <h3>Bibliothèque importante</h3>
             <p>Conçu pour gérer de grands catalogues musicaux. L’application a été testée avec 10 000 morceaux.</p>
           </article>
@@ -439,49 +655,97 @@
       <div class="container">
         <h2>Un lecteur puissant, visuel et pratique.</h2>
         <p class="section-intro">Remote Music Player va au-delà d’un simple lecteur audio : pochettes, paroles, visualisations, détails de lecture, boucles, raccourcis de navigation et intégration à l’écran verrouillé.</p>
-        <ul class="feature-list">
+        <ul class="feature-grid">
           <li>Affichage de la pochette du morceau.</li>
-          <li>Paroles défilantes lorsque les lyriques sont présentes dans le fichier.</li>
+          <li>Paroles défilantes synchronisées.</li>
           <li>19 visualisations différentes.</li>
           <li>Détails complets de la musique.</li>
           <li>Différents types de boucle.</li>
           <li>Barre d’avancement.</li>
-          <li>Chanson suivante.</li>
+          <li>Chanson suivante visible.</li>
           <li>Retour et avance rapide de 10 secondes.</li>
-          <li>Affichage de la musique ou de la radio sur l’écran verrouillé.</li>
-          <li>Changement de visualisation par simple toucher.</li>
+          <li>Affichage sur l’écran verrouillé.</li>
+          <li>Changement de visualisation par toucher.</li>
           <li>Appui long pour masquer l’animation.</li>
-          <li>Appui long sur une pochette pour ajouter aux favoris ou sauvegarder localement.</li>
+          <li>Appui long sur pochette — favoris ou copie locale.</li>
           <li>Appui court sur la pochette pour la cacher.</li>
         </ul>
       </div>
     </section>
 
+    <div class="effects-marquee" aria-label="Aperçu des visualisations">
+      <div class="effects-track">
+        <img src="screenshots/effet1.png"  alt="Visualisation 1"  />
+        <img src="screenshots/effet2.png"  alt="Visualisation 2"  />
+        <img src="screenshots/effet3.png"  alt="Visualisation 3"  />
+        <img src="screenshots/effet4.png"  alt="Visualisation 4"  />
+        <img src="screenshots/effet5.png"  alt="Visualisation 5"  />
+        <img src="screenshots/effet6.png"  alt="Visualisation 6"  />
+        <img src="screenshots/effet7.png"  alt="Visualisation 7"  />
+        <img src="screenshots/effet8.png"  alt="Visualisation 8"  />
+        <img src="screenshots/effet9.png"  alt="Visualisation 9"  />
+        <img src="screenshots/effet10.png" alt="Visualisation 10" />
+        <img src="screenshots/effet11.png" alt="Visualisation 11" />
+        <img src="screenshots/effet12.png" alt="Visualisation 12" />
+        <img src="screenshots/effet13.png" alt="Visualisation 13" />
+        <img src="screenshots/effet14.png" alt="Visualisation 14" />
+        <img src="screenshots/effet15.png" alt="Visualisation 15" />
+        <img src="screenshots/effet16.png" alt="Visualisation 16" />
+        <img src="screenshots/effet17.png" alt="Visualisation 17" />
+        <img src="screenshots/effet18.png" alt="Visualisation 18" />
+        <!-- duplicate for seamless loop -->
+        <img src="screenshots/effet1.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet2.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet3.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet4.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet5.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet6.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet7.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet8.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet9.png"  alt="" aria-hidden="true" />
+        <img src="screenshots/effet10.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet11.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet12.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet13.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet14.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet15.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet16.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet17.png" alt="" aria-hidden="true" />
+        <img src="screenshots/effet18.png" alt="" aria-hidden="true" />
+      </div>
+    </div>
+
     <section>
       <div class="container">
         <h2>Radio, réveil, météo et configuration avancée.</h2>
         <div class="grid">
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">📻</span>
             <h3>Radio en streaming</h3>
             <p>Les principales radios françaises sont préconfigurées. Vous pouvez supprimer celles que vous n’aimez pas et ajouter vos propres radios simplement.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">⏰</span>
             <h3>Réveil musical</h3>
             <p>Réveil certains jours et certaines heures avec radio ou musique. Choix de l’heure par jour, durée maximale, volume sonore et musique de secours si le réseau n’est pas disponible.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🌤️</span>
             <h3>Météo simple</h3>
             <p>Affichage météo simplifié sur la page de recherche, en trois zones : matin, midi, après-midi/soir. La localité peut être détectée automatiquement ou choisie manuellement.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🎛️</span>
             <h3>Égaliseur 20 bandes</h3>
             <p>Correction sonore avec deux profils : périphérique Bluetooth et haut-parleurs intégrés.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🎧</span>
             <h3>Confort d’écoute</h3>
             <p>Jingle de démarrage, ouverture automatique du lecteur lorsqu’un morceau est lancé, saut des silences au début et à la fin, et minuteur d’arrêt.</p>
           </article>
-          <article class="card">
+          <article class="card fade-up">
+            <span class="card-icon">🌐</span>
             <h3>Multilingue et sauvegarde</h3>
             <p>Interface disponible en français, anglais, espagnol, allemand et chinois. Export et import de configuration lors d’un changement de téléphone.</p>
           </article>
@@ -610,6 +874,22 @@
         if (e.key === 'Escape')      close();
         if (e.key === 'ArrowLeft')   show(current - 1);
         if (e.key === 'ArrowRight')  show(current + 1);
+      });
+    })();
+
+    // Scroll fade-in
+    (function () {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.fade-up').forEach(function (el) {
+        observer.observe(el);
       });
     })();
   </script>
