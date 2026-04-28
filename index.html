@@ -3,80 +3,542 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Remote Music Player</title>
+  <title>Remote Music Player — Lecteur musique, radio, réveil et météo</title>
+  <meta name="description" content="Remote Music Player permet d’écouter la radio, les musiques locales de l’iPhone ou les fichiers audio disponibles sur votre réseau local, avec recherche avancée, favoris, réveil musical, météo simple et lecteur riche." />
   <style>
-    body { margin:0; font-family:-apple-system, Arial; background:#0f1117; color:white; }
-    .container { width:95%; max-width:1100px; margin:auto; }
-    h1,h2 { margin-top:40px; }
-
-    .hero { padding:60px 0; }
-
-    .videos, .screenshots { display:grid; gap:20px; }
-    .videos { grid-template-columns: repeat(2,1fr); }
-    .screenshots { grid-template-columns: repeat(7,1fr); }
-
-    video, img {
-      width:100%;
-      border-radius:20px;
-      display:block;
+    :root {
+      --bg: #0f1117;
+      --panel: #171b24;
+      --panel-light: #202636;
+      --text: #f6f7fb;
+      --muted: #b8bfd4;
+      --accent: #7cc7ff;
+      --accent-2: #a7f3d0;
+      --border: rgba(255,255,255,0.12);
+      --shadow: 0 24px 70px rgba(0,0,0,0.35);
+      --radius: 28px;
     }
 
-    @media(max-width:900px){
-      .videos { grid-template-columns:1fr; }
-      .screenshots { grid-template-columns:repeat(2,1fr); }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124,199,255,0.18), transparent 32rem),
+        radial-gradient(circle at top right, rgba(167,243,208,0.12), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 28px 0;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(16px);
+      background: rgba(15,17,23,0.72);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-size: 1.15rem;
+    }
+
+    .app-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7cc7ff, #a7f3d0);
+      box-shadow: 0 10px 30px rgba(124,199,255,0.35);
+      display: grid;
+      place-items: center;
+      color: #071018;
+      font-weight: 900;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      font-size: 0.95rem;
+    }
+
+    .hero {
+      padding: 86px 0 64px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--accent-2);
+      background: rgba(255,255,255,0.05);
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.6rem, 6vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+      margin: 0 0 24px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      max-width: 720px;
+      margin-bottom: 28px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--panel-light);
+      color: var(--text);
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, #7cc7ff, #a7f3d0);
+      color: #071018;
+      border: none;
+    }
+
+    .phone-card {
+      width: min(360px, 100%);
+      margin: 0 auto;
+      aspect-ratio: 9 / 19.5;
+      border-radius: 48px;
+      padding: 16px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .phone-screen {
+      height: 100%;
+      border-radius: 36px;
+      background:
+        linear-gradient(180deg, rgba(124,199,255,0.22), transparent 40%),
+        linear-gradient(0deg, rgba(167,243,208,0.16), transparent 45%),
+        #111827;
+      overflow: hidden;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .mock-cover {
+      aspect-ratio: 1;
+      border-radius: 24px;
+      background: radial-gradient(circle at 35% 30%, #fff, #7cc7ff 24%, #334155 62%, #111827);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+
+    .mock-title {
+      margin-top: 18px;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.04em;
+    }
+
+    .mock-subtitle {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .mock-bars {
+      display: grid;
+      grid-template-columns: repeat(19, 1fr);
+      gap: 4px;
+      align-items: end;
+      height: 72px;
+      margin-top: 24px;
+    }
+
+    .mock-bars span {
+      display: block;
+      background: linear-gradient(180deg, #a7f3d0, #7cc7ff);
+      border-radius: 999px;
+      min-height: 12px;
+    }
+
+    section {
+      padding: 54px 0;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05;
+      letter-spacing: -0.055em;
+      margin: 0 0 18px;
+    }
+
+    .section-intro {
+      color: var(--muted);
+      max-width: 780px;
+      font-size: 1.12rem;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: -0.025em;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .card ul {
+      padding-left: 20px;
+      margin: 12px 0 0;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+    }
+
+    .screenshots {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 14px;
+    }
+
+    .screenshots img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 9 / 19.5;
+      object-fit: cover;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+    }
+
+    .media-grid video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      background: #000;
+    }
+
+    .feature-list {
+      columns: 2;
+      column-gap: 40px;
+      color: var(--muted);
+      padding-left: 20px;
+    }
+
+    .privacy-box {
+      background: linear-gradient(135deg, rgba(124,199,255,0.1), rgba(167,243,208,0.08));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+
+    footer {
+      padding: 40px 0 60px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .grid,
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .screenshots {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .feature-list {
+        columns: 1;
+      }
+
+      header {
+        position: static;
+      }
     }
   </style>
 </head>
 <body>
-
-<div class="container">
-
-  <section class="hero">
-    <h1>Remote Music Player</h1>
-    <p>L’application de musique la plus complète de l’App Store. Lecture locale, réseau, radio, réveil et météo.</p>
-  </section>
-
-  <section>
-    <h2>Vidéos de démonstration</h2>
-    <div class="videos">
-      <video src="videos/demo-1.mp4" controls></video>
-      <video src="videos/demo-2.mp4" controls></video>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="app-icon">♫</div>
+        <span>Remote Music Player</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#features">Fonctions</a>
+        <a href="#demo">Démos</a>
+        <a href="#screenshots">Captures</a>
+        <a href="#support">Support</a>
+        <a href="#privacy">Confidentialité</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <section>
-    <h2>Captures d’écran</h2>
-    <div class="screenshots">
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Musique locale, réseau, radio, réveil et météo</div>
+          <h1>L’application musicale privée et complète pour iPhone.</h1>
+          <p class="lead">Remote Music Player permet d’écouter vos musiques sur iPhone, depuis un répertoire local ou depuis votre réseau domestique, avec radio en streaming, réveil musical, recherche avancée, favoris, visualisations, paroles et météo simple.</p>
+          <div class="buttons">
+            <a class="button primary" href="#demo">Voir les démos</a>
+            <a class="button" href="#privacy">Politique de confidentialité</a>
+          </div>
+        </div>
 
-      <img src="screenshots/screen-01.png">
-      <img src="screenshots/screen-02.png">
-      <img src="screenshots/screen-03.png">
-      <img src="screenshots/screen-04.png">
-      <img src="screenshots/screen-05.png">
-      <img src="screenshots/screen-06.png">
-      <img src="screenshots/screen-07.png">
-      <img src="screenshots/screen-08.png">
-      <img src="screenshots/screen-09.png">
-      <img src="screenshots/screen-10.png">
-      <img src="screenshots/screen-11.png">
-      <img src="screenshots/screen-12.png">
-      <img src="screenshots/screen-13.png">
-      <img src="screenshots/screen-14.png">
+        <div class="phone-card" aria-label="Aperçu visuel de l'application">
+          <div class="phone-screen">
+            <div>
+              <div class="mock-cover"></div>
+              <div class="mock-title">Lecture en cours</div>
+              <div class="mock-subtitle">Pochette, paroles, visualisations et contrôles avancés</div>
+            </div>
+            <div class="mock-bars" aria-hidden="true">
+              <span style="height:20%"></span><span style="height:55%"></span><span style="height:35%"></span><span style="height:78%"></span><span style="height:42%"></span><span style="height:92%"></span><span style="height:65%"></span><span style="height:30%"></span><span style="height:88%"></span><span style="height:50%"></span><span style="height:72%"></span><span style="height:38%"></span><span style="height:95%"></span><span style="height:58%"></span><span style="height:24%"></span><span style="height:82%"></span><span style="height:45%"></span><span style="height:68%"></span><span style="height:33%"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <section id="features">
+      <div class="container">
+        <h2>Une bibliothèque musicale complète, sans dépendre d’un cloud musical.</h2>
+        <p class="section-intro">L’application scanne vos musiques locales ou distantes, construit un catalogue exploitable, permet une recherche fine et donne accès rapidement aux artistes, albums, titres, favoris, fichiers récents ou lectures aléatoires.</p>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Catalogue local ou réseau</h3>
+            <p>Scan d’un répertoire local ou distant pour construire automatiquement un catalogue des musiques disponibles.</p>
+          </article>
+          <article class="card">
+            <h3>Recherche avancée</h3>
+            <p>Recherche par artiste, album, titre, style et année, avec possibilité de sauvegarder les recherches importantes pour un accès immédiat.</p>
+          </article>
+          <article class="card">
+            <h3>Navigation naturelle</h3>
+            <p>Affichage par liste d’artistes, puis albums et titres, avec possibilité de voir tous les morceaux d’un artiste sans fouiller dans chaque album.</p>
+          </article>
+          <article class="card">
+            <h3>Favoris et accès rapide</h3>
+            <p>Affichage des favoris, des derniers fichiers ajoutés et de sélections aléatoires pour retrouver facilement quoi écouter.</p>
+          </article>
+          <article class="card">
+            <h3>Écoute hors réseau</h3>
+            <p>Les musiques distantes peuvent être copiées localement sur l’iPhone pour rester disponibles hors du réseau local. La copie locale peut être supprimée simplement.</p>
+          </article>
+          <article class="card">
+            <h3>Bibliothèque importante</h3>
+            <p>Conçu pour gérer de grands catalogues musicaux. L’application a été testée avec 10 000 morceaux.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Un lecteur puissant, visuel et pratique.</h2>
+        <p class="section-intro">Remote Music Player va au-delà d’un simple lecteur audio : pochettes, paroles, visualisations, détails de lecture, boucles, raccourcis de navigation et intégration à l’écran verrouillé.</p>
+        <ul class="feature-list">
+          <li>Affichage de la pochette du morceau.</li>
+          <li>Paroles défilantes lorsque les lyriques sont présentes dans le fichier.</li>
+          <li>19 visualisations différentes.</li>
+          <li>Détails complets de la musique.</li>
+          <li>Différents types de boucle.</li>
+          <li>Barre d’avancement.</li>
+          <li>Chanson suivante.</li>
+          <li>Retour et avance rapide de 10 secondes.</li>
+          <li>Affichage de la musique ou de la radio sur l’écran verrouillé.</li>
+          <li>Changement de visualisation par simple toucher.</li>
+          <li>Appui long pour masquer l’animation.</li>
+          <li>Appui long sur une pochette pour ajouter aux favoris ou sauvegarder localement.</li>
+          <li>Appui court sur la pochette pour la cacher.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Radio, réveil, météo et configuration avancée.</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>Radio en streaming</h3>
+            <p>Les principales radios françaises sont préconfigurées. Vous pouvez supprimer celles que vous n’aimez pas et ajouter vos propres radios simplement.</p>
+          </article>
+          <article class="card">
+            <h3>Réveil musical</h3>
+            <p>Réveil certains jours et certaines heures avec radio ou musique. Choix de l’heure par jour, durée maximale, volume sonore et musique de secours si le réseau n’est pas disponible.</p>
+          </article>
+          <article class="card">
+            <h3>Météo simple</h3>
+            <p>Affichage météo simplifié sur la page de recherche, en trois zones : matin, midi, après-midi/soir. La localité peut être détectée automatiquement ou choisie manuellement.</p>
+          </article>
+          <article class="card">
+            <h3>Égaliseur 20 bandes</h3>
+            <p>Correction sonore avec deux profils : périphérique Bluetooth et haut-parleurs intégrés.</p>
+          </article>
+          <article class="card">
+            <h3>Confort d’écoute</h3>
+            <p>Jingle de démarrage, ouverture automatique du lecteur lorsqu’un morceau est lancé, saut des silences au début et à la fin, et minuteur d’arrêt.</p>
+          </article>
+          <article class="card">
+            <h3>Multilingue et sauvegarde</h3>
+            <p>Interface disponible en français, anglais, espagnol, allemand et chinois. Export et import de configuration lors d’un changement de téléphone.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="container">
+        <h2>Vidéos de démonstration</h2>
+        <div class="media-grid">
+          <video src="videos/demo-1.mp4" controls playsinline>
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
+          <video src="videos/demo-2.mp4" controls playsinline>
+            Votre navigateur ne supporte pas la lecture vidéo.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenshots">
+      <div class="container">
+        <h2>Captures d’écran</h2>
+        <div class="screenshots">
+          <img src="screenshots/screen-01.png" alt="Capture d’écran 1" />
+          <img src="screenshots/screen-02.PNG" alt="Capture d’écran 2" />
+          <img src="screenshots/screen-03.PNG" alt="Capture d’écran 3" />
+          <img src="screenshots/screen-04.PNG" alt="Capture d’écran 4" />
+          <img src="screenshots/screen-05.PNG" alt="Capture d’écran 5" />
+          <img src="screenshots/screen-06.PNG" alt="Capture d’écran 6" />
+          <img src="screenshots/screen-07.PNG" alt="Capture d’écran 7" />
+          <img src="screenshots/screen-08.PNG" alt="Capture d’écran 8" />
+          <img src="screenshots/screen-09.PNG" alt="Capture d’écran 9" />
+          <img src="screenshots/screen-10.PNG" alt="Capture d’écran 10" />
+          <img src="screenshots/screen-11.PNG" alt="Capture d’écran 11" />
+          <img src="screenshots/screen-12.PNG" alt="Capture d’écran 12" />
+          <img src="screenshots/screen-13.PNG" alt="Capture d’écran 13" />
+          <img src="screenshots/screen-14.PNG" alt="Capture d’écran 14" />
+        </div>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="container">
+        <h2>Support</h2>
+        <div class="card">
+          <p>Pour toute question, demande d’aide ou signalement de problème, contactez le support :</p>
+          <p><strong>Email :</strong> <a href="mailto:histoireperle@free.fr">histoireperle@free.fr</a></p>
+          <p>Merci d’indiquer le modèle de votre iPhone, la version d’iOS, la version de l’application et une description précise du problème rencontré.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="privacy">
+      <div class="container">
+        <h2>Politique de confidentialité</h2>
+        <div class="privacy-box">
+          <p><strong>Remote Music Player respecte votre vie privée.</strong></p>
+          <p>L’application est conçue pour lire vos musiques locales, vos fichiers disponibles sur votre réseau local et des flux radio en streaming. Les fichiers musicaux ne sont pas envoyés vers un serveur appartenant à l’éditeur de l’application.</p>
+          <p>L’application peut demander l’accès au réseau local afin de détecter ou lire des contenus audio disponibles sur votre réseau domestique. Elle peut également utiliser la localisation de l’appareil uniquement pour proposer une météo locale simplifiée, sauf si vous choisissez manuellement une localité.</p>
+          <p>Les favoris, recherches sauvegardées, radios personnalisées, réglages audio, réveils, préférences d’interface et fichiers copiés localement restent stockés sur votre appareil, sauf action volontaire d’export/import de configuration.</p>
+          <p>Aucune donnée personnelle n’est vendue. Aucune bibliothèque musicale personnelle n’est utilisée à des fins publicitaires. Aucune donnée musicale locale n’est partagée avec des tiers par l’application.</p>
+          <p>Contact confidentialité : <a href="mailto:histoireperle@free.fr">histoireperle@free.fr</a></p>
+          <p><em>Dernière mise à jour : 28 avril 2026.</em></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Remote Music Player. Tous droits réservés.</p>
+      <p><a href="#support">Support</a> · <a href="#privacy">Confidentialité</a></p>
     </div>
-  </section>
-
-  <section>
-    <h2>Support</h2>
-    <p>Email : histoireperle@free.fr</p>
-  </section>
-
-  <section>
-    <h2>Confidentialité</h2>
-    <p>L’application ne collecte pas de données personnelles. Les fichiers restent locaux ou sur votre réseau.</p>
-  </section>
-
-</div>
-
+  </footer>
 </body>
 </html>
